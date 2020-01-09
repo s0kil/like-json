@@ -8,13 +8,15 @@
 (function () {
   'use strict';
 
-  console.log(this);
+  let $references = {};
 
   let like = {
     _json_cache: {}
   };
 
   like.json = function (schema, options) {
+    ++this._unique_instance;
+    
     options = options || {};
 
     function value (v, k) {
@@ -136,7 +138,15 @@
     return Function('o', "return '" + value(schema, 'o') + "';");
   }
 
-  like.stringify = function (obj, id, options) {
+  like.stringify = function (obj, options) {
+    let id;
+    if ($references[obj] === obj) {
+      id = $references[obj];
+    } else {
+      $references[obj] = obj;
+      id = $references[obj];
+    }
+    
     if (!this._json_cache[id]) {
       this._json_cache[id] = this.json(obj, options);
     }

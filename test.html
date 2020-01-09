@@ -60,7 +60,7 @@
         let $2_result = [];
         let $2_begin = performance.now();
         benchmark(i => {
-          $2_result[i] = like.stringify(data, i);
+          $2_result[i] = like.stringify(data);
         });
         let $2_finish = performance.now() - $2_begin;
         benchResults["like.stringify"] = {
@@ -87,9 +87,10 @@
       (async function() {
         await fetch("https://api.github.com/repos/infernojs/inferno/releases")
           .then(r => r.json())
-          .then(jsonData =>
-            main([...jsonData, ...jsonData, ...jsonData, ...jsonData])
-          );
+          .then(jsonData => {
+            main(jsonData);
+            // main([...jsonData, ...jsonData, ...jsonData, ...jsonData]);
+          });
       })();
     </script>
   </body>
