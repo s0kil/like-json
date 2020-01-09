@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Like Large JSON Test</title>
+
+    <script src="https://unpkg.com/like-json/index.min.js"></script>
+  </head>
+
+  <body>
+    <script>
+      const loops = 1000;
+
+      // https://stackoverflow.com/a/29387295
+      const typeSizes = {
+        undefined: () => 0,
+        boolean: () => 4,
+        number: () => 8,
+        string: item => 2 * item.length,
+        object: item =>
+          !item
+            ? 0
+            : Object.keys(item).reduce(
+                (total, key) => sizeOf(key) + sizeOf(item[key]) + total,
+                0
+              )
+      };
+
+      function sizeOf(value) {
+        return typeSizes[typeof value](value);
+      }
+
+      function benchmark(callback) {
+        for (let i = 0; i < loops; i++) {
+          callback(i);
+        }
+      }
+
+      function main(data) {
+        let benchResults = {};
+
+        const stringify = like.json(data);
+
+        // FIRST
+        let $1_result = [];
+        let $1_begin = performance.now();
+        try {
+          benchmark(i => {
+            $1_result[i] = JSON.stringify(data);
+          });
+        } catch (error) {
+          throw "FIRST FAILED";
+        }
+        let $1_finish = performance.now() - $1_begin;
+        benchResults["JSON.stringify"] = {
+          time: $1_finish,
+          size: sizeOf($1_result)
+        };
+
+        // SECOND
+        let $2_result = [];
+        let $2_begin = performance.now();
+        try {
+          benchmark(i => {
+            $2_result[i] = like.stringify(data, i);
+          });
+        } catch (error) {
+          throw "SECOND FAILED";
+        }
+        let $2_finish = performance.now() - $2_begin;
+        benchResults["like.stringify"] = {
+          time: $2_finish,
+          size: sizeOf($2_result)
+        };
+
+        // THIRD
+        let $3_result = [];
+        let $3_begin = performance.now();
+        try {
+          benchmark(i => {
+            $3_result[i] = stringify(data);
+          });
+        } catch (error) {
+          throw "SECOND FAILED";
+        }
+        let $3_finish = performance.now() - $3_begin;
+        benchResults["like.json"] = {
+          time: $3_finish,
+          size: sizeOf($3_result)
+        };
+
+        // RESULTS
+        console.table(benchResults);
+      }
+
+      (async function() {
+        await fetch("https://api.github.com/repos/infernojs/inferno/releases")
+          .then(r => r.json())
+          .then(jsonData =>
+            main([...jsonData, ...jsonData, ...jsonData, ...jsonData])
+          );
+      })();
+    </script>
+  </body>
+</html>
