@@ -6,13 +6,14 @@
     <title>Like Large JSON Test</title>
 
     <script src="./index.js"></script>
+    <!-- <script src="./index.prepack.js"></script> -->
   </head>
 
   <body>
     <script>
       console.info("STARTING BENCH");
 
-      const loops = 1000;
+      const loops = 1;
 
       // https://stackoverflow.com/a/29387295
       const typeSizes = {
@@ -42,8 +43,6 @@
       function main(data) {
         let benchResults = {};
 
-        const stringify = like.json(data);
-
         // FIRST
         let $1_result = [];
         let $1_begin = performance.now();
@@ -71,6 +70,7 @@
         // THIRD
         let $3_result = [];
         let $3_begin = performance.now();
+        let stringify = like.json(data);
         benchmark(i => {
           $3_result[i] = stringify(data);
         });
@@ -88,8 +88,12 @@
         await fetch("https://api.github.com/repos/infernojs/inferno/releases")
           .then(r => r.json())
           .then(jsonData => {
-            main(jsonData);
-            // main([...jsonData, ...jsonData, ...jsonData, ...jsonData]);
+            main(jsonData[0]);
+            // main(jsonData);
+            // main({ ...jsonData });
+            // main({ jsonData, jsonData, jsonData, jsonData });
+            // main({...jsonData, ...jsonData, ...jsonData, ...jsonData});
+            // main([jsonData, jsonData, jsonData, jsonData]);
           });
       })();
     </script>
