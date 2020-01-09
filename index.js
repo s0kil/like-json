@@ -8,6 +8,8 @@
 (function () {
   'use strict';
 
+  console.log(this);
+
   let like = {
     _json_cache: {}
   };

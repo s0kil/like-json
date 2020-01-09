@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Like Large JSON Test</title>
 
-    <script src="https://unpkg.com/like-json/index.min.js"></script>
+    <script src="./index.js"></script>
   </head>
 
   <body>
     <script>
+      console.info("STARTING BENCH");
+
       const loops = 1000;
 
       // https://stackoverflow.com/a/29387295
@@ -45,13 +47,9 @@
         // FIRST
         let $1_result = [];
         let $1_begin = performance.now();
-        try {
-          benchmark(i => {
-            $1_result[i] = JSON.stringify(data);
-          });
-        } catch (error) {
-          throw "FIRST FAILED";
-        }
+        benchmark(i => {
+          $1_result[i] = JSON.stringify(data);
+        });
         let $1_finish = performance.now() - $1_begin;
         benchResults["JSON.stringify"] = {
           time: $1_finish,
@@ -61,13 +59,9 @@
         // SECOND
         let $2_result = [];
         let $2_begin = performance.now();
-        try {
-          benchmark(i => {
-            $2_result[i] = like.stringify(data, i);
-          });
-        } catch (error) {
-          throw "SECOND FAILED";
-        }
+        benchmark(i => {
+          $2_result[i] = like.stringify(data, i);
+        });
         let $2_finish = performance.now() - $2_begin;
         benchResults["like.stringify"] = {
           time: $2_finish,
@@ -77,13 +71,9 @@
         // THIRD
         let $3_result = [];
         let $3_begin = performance.now();
-        try {
-          benchmark(i => {
-            $3_result[i] = stringify(data);
-          });
-        } catch (error) {
-          throw "SECOND FAILED";
-        }
+        benchmark(i => {
+          $3_result[i] = stringify(data);
+        });
         let $3_finish = performance.now() - $3_begin;
         benchResults["like.json"] = {
           time: $3_finish,
