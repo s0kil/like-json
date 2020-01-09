@@ -4,7 +4,9 @@
   "description": "Stringify at perfect performance. +1200%",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prepack": "prepack --out index.prepack.js index.js",
+    "minify": "google-closure-compiler --compilation_level=ADVANCED --js_output_file=index.min.js --js=index.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
   ],
   "devDependencies": {
     "benchmark": "^2.1.4",
-    "jest": "^23.6.0"
+    "google-closure-compiler": "^20200109.0.0-nightly",
+    "jest": "^24.9.0"
   }
 }
